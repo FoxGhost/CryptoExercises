@@ -4,5 +4,5 @@ they maybe aren't completely correct, so anyone is invited to suggest a solution
 
 If you find an error pleas try also to find a soluion
 
-Discord Servervfor LM Ingegneria informatica:
+Discord Server for discussing PoliTo LM Ingegneria Informatica:
 https://discord.gg/bpsxtkhZvu
