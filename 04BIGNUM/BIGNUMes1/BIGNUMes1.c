@@ -152,6 +152,8 @@ int main(){
     BN_free(bn1);
     BN_free(bn2);
     BN_free(bn3);
+    BN_free(res);
+    BN_free(rem);
     BN_CTX_free(ctx);
 
     CRYPTO_cleanup_all_ex_data();
