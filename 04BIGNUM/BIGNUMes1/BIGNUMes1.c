@@ -42,6 +42,9 @@ int main(){
 		handle_errors();
 
     //generating the three random 32 bytes strings
+    /*
+        It can be done directly with BigNumbers functions
+
     if(RAND_bytes(random_string1, MAX) != 1)
 	    handle_errors();
 
@@ -50,6 +53,8 @@ int main(){
 
     if(RAND_bytes(random_string3, MAX) != 1)
         handle_errors();
+        
+    */
 
     //Now create the BN variables
     BIGNUM *bn1 = BN_new();
@@ -58,14 +63,53 @@ int main(){
     BIGNUM *res = BN_new();
 
     //we have hex digit in the strings so we need to create BN from hex
+    /*
+        Convert if generated with RAND
+
     BN_bin2bn(random_string1, MAX, bn1);
     BN_bin2bn(random_string2, MAX, bn2);
     BN_bin2bn(random_string3, MAX, bn3);
 
-    /*
-    CHECK (unnecessary)
-    print the BN and strigs to check the are the same
     */
+
+   /*
+        Generating the random numbers with BN function
+
+        int BN_rand(BIGNUM *rnd, int bits, int top, int bottom);
+
+
+        BN_rand() generates a cryptographically strong 
+        pseudo-random number of bits in length and stores it in rnd. 
+        If bits is less than zero, or too small to accomodate the requirements 
+        specified by the top and bottom parameters, an error is returned. 
+        If top is -1, the most significant bit of the random number can be zero. 
+        If top is 0, it is set to 1, and if top is 1, the two most significant 
+        bits of the number will be set to 1, so that the product of two such 
+        random numbers will always have 2*bits length. 
+        If bottom is true, the number will be odd. 
+        The value of bits must be zero or greater. 
+        If bits is 1 then top cannot also be 1.
+   */
+
+    if(!BN_rand(bn1, MAX*8, 0, 1))
+        handle_errors();
+    printf("\nBN1:\n");
+    BN_print_fp(stdout,bn1);
+
+    if(!BN_rand(bn2, MAX*8, 0, 1))
+        handle_errors();
+    printf("\nBN2:\n");
+    BN_print_fp(stdout,bn2);
+
+    if(!BN_rand(bn3, MAX*8, 0, 1))
+        handle_errors();
+    printf("\nBN3:\n");
+    BN_print_fp(stdout,bn3);
+
+    /*
+    CHECK (unnecessary) do if use RANDOM to generate strings 
+    print the BN and strigs to check the are the same
+    
     printf("String1:\n");
 	for (int i = 0; i < MAX; i++){
 		printf("%02X", random_string1[i]);
@@ -86,6 +130,7 @@ int main(){
 	}
     printf("\nBN3:\n");
     BN_print_fp(stdout,bn3);
+    */
 
     /*
         Let's do the operations required:
@@ -132,8 +177,11 @@ int main(){
     // bn3/bn1 = res + rem
     if(!BN_div(res, rem, bn3, bn1, ctx))
         handle_errors();
-    printf("\nDiv:\n");
+    printf("\nDiv Res:\n");
     BN_print_fp(stdout,res);
+    printf("\nDiv Rem:\n");
+    BN_print_fp(stdout,rem);
+
 
     // rem = bn1/bn2 when res = 0
     // rem = bn1%bn2
