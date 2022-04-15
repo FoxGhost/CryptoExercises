@@ -3,6 +3,9 @@
 *.DS_Store
 makefile
 exe
+*.pem
+*.bin
+*.enc
 
 # Object files
 *.o
