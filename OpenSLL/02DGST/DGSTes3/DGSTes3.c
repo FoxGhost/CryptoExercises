@@ -18,7 +18,7 @@ int main(int argc, char **argv){
 
     EVP_MD_CTX *md;
     FILE *fp;
-    EVP_MD *evp_md;
+    const EVP_MD *evp_md;
 
     unsigned char  buffer[MAXBUF];
     int n_read;
@@ -27,7 +27,7 @@ int main(int argc, char **argv){
 
     //arguments check
     if (argc != 3){
-        fprintf(stderr,"Invalid parameters num. Usage: %s file to hash second file to hash\n", argv[0]);
+        fprintf(stderr,"Invalid parameters num. Usage: %s file_to_hash hash_algorithm_name\n", argv[0]);
         exit(-1);
     }
     
