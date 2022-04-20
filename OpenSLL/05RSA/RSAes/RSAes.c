@@ -1,6 +1,6 @@
 /*
 * Exercise on RSA 
-* take as input the signature file and call again the DigestSing Primitive 
+* take as input the signature file and call again the DigestSign Primitive 
 * in order to perform the verification that is actually made with the 
 * command:
 *
@@ -59,53 +59,45 @@ int main(int argc, char** argv){
         exit(1);
     }
 
-    EVP_PKEY *private_key = PEM_read_PrivateKey(f_key, NULL, NULL, NULL);
+    //reading the public key from file
+    EVP_PKEY *public_key = PEM_read_PUBKEY(f_key, NULL, NULL, NULL);
     fclose(f_key);
 
-    EVP_MD_CTX *sign_ctx = EVP_MD_CTX_new();
+    //context for thr verification
+    EVP_MD_CTX *ver_ctx = EVP_MD_CTX_new();
 
-    if(!EVP_DigestSignInit(sign_ctx, NULL, EVP_sha256(), NULL, private_key))
+    //Initializing the verification 
+    if(!EVP_DigestVerifyInit(ver_ctx, NULL, EVP_sha256(), NULL, public_key))
         handle_errors();
-
-    unsigned char buffer[MAXBUFFER];
+//    printf("Verify Init Ok\n");
 
     size_t n_read;
-
-    while ((n_read = fread(buffer, 1, MAXBUFFER, f_in)) > 0){
-        if(!EVP_DigestSignUpdate(sign_ctx, buffer, n_read))
+    unsigned char buffer[MAXBUFFER];
+//Updating the verification with chunk of the file
+    while((n_read = fread(buffer,1,MAXBUFFER,f_in)) > 0){
+        if(!EVP_DigestVerifyUpdate(ver_ctx, buffer, n_read))
             handle_errors();
     }
-    fclose(f_in);
+//    printf("Verify Update Ok\n");
 
-    unsigned char signature[EVP_PKEY_size(private_key)];
 
-    size_t signature_len;
-    size_t dgst_len;
+    unsigned char signature[EVP_PKEY_size(public_key)];
+    size_t sig_len = 0;
+    size_t digest_len;
 
-    if(!EVP_DigestSignFinal(sign_ctx, NULL, &dgst_len))
-        handle_errors();
-
-    if(!EVP_DigestSignFinal(sign_ctx, signature, &signature_len))
-        handle_errors();
-
-    EVP_MD_CTX_free(sign_ctx);
-
-    unsigned char old_signature[EVP_PKEY_size(private_key)];
-
-    //read the given sign
-    while ((n_read = fread(old_signature, 1, signature_len, f_sign)) > 0);
-
-    for (int i = 0; i < signature_len; i++){
-        if (signature[i] != old_signature[i]){
-            printf("Sign NOT OK");
-        }
+// read the given signature
+    while((n_read = fread(signature,1,MAXBUFFER,f_sign)) > 0){
+        sig_len += n_read;
     }
+    fclose(f_in);
+    fclose(f_sign);
 
-    printf("Sign OK");
+//  Performing the verification
+    if(EVP_VerifyFinal(ver_ctx, signature, sig_len, public_key))
+        printf("Signature OK");
+    else
+        printf("Signature NOT OK");
     
-    
-
-
     return 0;
 
 }
