@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
 		handle_errors();
 	}
 
-	printf("Sequence generated: ")
+	printf("Sequence generated: ");
 	for (int i = 0; i < MAX; i++){
 		printf("%02x-", random_string[i]);
 	}
