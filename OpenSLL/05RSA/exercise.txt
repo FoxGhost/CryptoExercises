@@ -1,0 +1,7 @@
+Exercise on RSA 
+take as input the signature file and call again the DigestSing Primitive 
+in order to perform the verification that is actually made with the 
+command:
+
+openssl dgst -sha256 -signature signature.bin -verify public.pem 
+signed_file
