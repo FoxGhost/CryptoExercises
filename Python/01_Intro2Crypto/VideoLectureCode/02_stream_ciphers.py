@@ -12,7 +12,8 @@ if __name__ == '__main__':
     print("Nonce = " + base64.b64encode(nonce).decode())
 
 
-    cipher = ChaCha20.new(key = key, nonce = nonce)#nonce is not specified
+    #cipher = ChaCha20.new(key = key)#nonce is not specified, it could be leave empty but then you must save it
+    cipher = ChaCha20.new(key=key, nonce=nonce)
 
     ciphertext = cipher.encrypt(plaintext)
     ciphertext += cipher.encrypt(plaintext_2)

@@ -30,7 +30,7 @@ if __name__ == '__main__':
     key = get_random_bytes(AES.key_size[0])
     iv = get_random_bytes(AES.block_size)
 
-    f_input = open(__file__, "rb")
+    f_input = open(__file__, "rb")#__file__ corresponds to this script
 
     cipher = AES.new(key, AES.MODE_CBC, iv)
 
