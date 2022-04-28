@@ -57,6 +57,8 @@ server = remote(HOST, PORT)
 server.send(msg)
 
 rec = server.recv(1024)
+server.close()
+
 rec_hex = rec.hex()
 #print("Received: " + rec_hex)
 
@@ -68,3 +70,33 @@ if rec_hex[2*BLOCK_SIZE_HEX: 3*BLOCK_SIZE_HEX] == rec_hex[3*BLOCK_SIZE_HEX: 4*BL
     print("ECB")
 else:
     print("CBC")
+
+"""
+What if I don't know about the prefix len and the postfix len, but I know they are present?
+I should create a message long enough to find it in the cipher text if it is encrypted in ECB mode
+This is a more generic case
+"""
+msg = 'A' * AES.block_size * 10
+
+server = remote(HOST, PORT)
+server.send(msg)
+rec = server.recv(1024)
+server.close()
+
+rec_hex = rec.hex()
+
+print("Selected Mode is: ")
+cbc = True
+
+for i in range(0, len(rec_hex)//BLOCK_SIZE_HEX):
+    print(rec_hex[i*BLOCK_SIZE_HEX: (i+1)*BLOCK_SIZE_HEX])
+
+for i in range(0, len(rec_hex) // BLOCK_SIZE_HEX):
+    if rec_hex[i*BLOCK_SIZE_HEX: (i+1)*BLOCK_SIZE_HEX] == rec_hex[(i+1)*BLOCK_SIZE_HEX: (i+2)*BLOCK_SIZE_HEX]:
+        print("ECB")
+        cbc = False
+        break
+
+if cbc:
+    print("CBC")
+
