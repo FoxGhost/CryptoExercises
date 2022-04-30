@@ -76,7 +76,7 @@ What if I don't know about the prefix len and the postfix len, but I know they a
 I should create a message long enough to find it in the cipher text if it is encrypted in ECB mode
 This is a more generic case
 """
-msg = 'A' * AES.block_size * 10
+msg = 'A' * AES.block_size * 3
 
 server = remote(HOST, PORT)
 server.send(msg)
