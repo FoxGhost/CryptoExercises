@@ -33,7 +33,8 @@ int main(int argc, char** argv){
     unsigned char *iv;
     int iv_len, key_len;
     FILE *f_in;
-    unsigned char mask = 0xFF;
+//  unsigned char *mask = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+    unsigned char *mask = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     int n_read;
     unsigned char buffer[MAXSIZE];
     unsigned char ciphertext[MAXSIZE + 16];
@@ -41,10 +42,6 @@ int main(int argc, char** argv){
     int len;
     int ciphertext_len = 0;
     int plaintext_len = 0;
-
-
-
-
 
 
     EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
@@ -101,6 +98,18 @@ int main(int argc, char** argv){
    if(!EVP_CipherInit(ctx, EVP_chacha20(), key, iv, ENCRYPT))
         handle_errors();
 
+    printf("Plaintext:\n");
+    while ((n_read = fread(buffer, 1, MAXSIZE, f_in)) > 0 ){
+        printf("%s", buffer);
+    }
+    printf("\n");
+    fclose(f_in);
+
+    if ((f_in = fopen(argv[1], "r")) == NULL){
+       fprintf(stderr, "Errors opening the input file\n", argv[0]);
+       exit(1);
+    }
+    
     while ((n_read = fread(buffer, 1, MAXSIZE, f_in)) > 0 ){
         
         if(ciphertext_len > MAX_ENC_LEN - n_read - EVP_CIPHER_CTX_block_size(ctx)){ //use EVP_CIPHER_get_block_size with OpenSSL 3.0+
@@ -123,9 +132,11 @@ int main(int argc, char** argv){
     printf("Encryption completed\n");
 
     EVP_CIPHER_CTX_free(ctx);
+    fclose(f_in);
 
 
     printf("Size of the ciphertext = %d\n", ciphertext_len);
+    printf("Ciphertext:\n");
 
     for (int i = 0; i < ciphertext_len; i++){
         printf("%02x", ciphertext[i]);
@@ -133,14 +144,14 @@ int main(int argc, char** argv){
     printf("\n");
 
     printf("Now xor the ciphertext\n");
-
-    for (int i = 0; i < ciphertext_len; i++){
-        ciphertext[i] = ciphertext[i] ^ mask;
+    int j;
+    for (int i = 0, j = 0; i < ciphertext_len; i++, j++){
+        ciphertext[i] = ciphertext[i] ^ 1;
         printf("%02x", ciphertext[i]);
     }
     printf("\nXor end\n");
 
-//DECRYPTION PART
+//DECRYPTION PART------------------------------------------------------------------------------------------
 
     printf("New ctx\n");
 
@@ -161,19 +172,14 @@ int main(int argc, char** argv){
     unsigned char new_buffer[MAXSIZE];
 
 
-    while ((n_read = fread(new_buffer, 1, MAXSIZE, f_in)) > 0 ){
-        
-        if(plaintext_len > MAX_ENC_LEN - n_read - EVP_CIPHER_CTX_block_size(ctx1)){ //use EVP_CIPHER_get_block_size with OpenSSL 3.0+
-            fprintf(stderr,"The file to cipher is larger than I can\n");
-            abort();
-        }
+    //for (int i = 0; i < ciphertext_len; i++){
 
-        if(!EVP_CipherUpdate(ctx1, plaintext, &len, new_buffer, n_read))
+        if(!EVP_CipherUpdate(ctx1, plaintext, &len, ciphertext, ciphertext_len))
             handle_errors();
         
         plaintext_len += len;
 
-    }
+   // }
 
     if(!EVP_CipherFinal(ctx1, plaintext+plaintext_len, &len))
         handle_errors();
@@ -182,19 +188,28 @@ int main(int argc, char** argv){
 
     printf("Decryption completed\n");
 
+    printf("Decrypted text:\n");
+    //for (int i = 0; i < plaintext_len; i++){
+        printf("%s", plaintext/*[i]*/);
+    //}
+    printf("\n");
+
 
     printf("Now xor the plaintext\n");
 
-    for (int i = 0; i < plaintext_len; i++){
-        plaintext[i] = plaintext[i] ^ mask;
-        printf("%02x", plaintext[i]);
+    for (int i = 0; i < ciphertext_len; i++){
+        plaintext[i] = plaintext[i] ^ 1;
     }
+
     printf("\nXor end\n");
 
+    printf("Plaintext:\n");
+    printf("%s", plaintext);
+    printf("\n");
 
     EVP_CIPHER_CTX_free(ctx1);
 
-
+    printf("END");
 
     CRYPTO_cleanup_all_ex_data();
     ERR_free_strings();
