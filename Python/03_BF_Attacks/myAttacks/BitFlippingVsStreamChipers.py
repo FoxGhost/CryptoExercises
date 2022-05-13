@@ -31,7 +31,7 @@ if __name__ == '__main__':
     unicode_int_to_inkect = ord(new_number_to_inject)
 
     #create the mask
-    mask = ord(b'1') ^ unicode_int_to_inkect
+    mask = ord(b'1') ^ unicode_int_to_inkect #the value inside ord must be the same original value Bob wants to change
 
     #let the ciphertext an editable item
     edt_ciphertext = bytearray(ciphertext)
