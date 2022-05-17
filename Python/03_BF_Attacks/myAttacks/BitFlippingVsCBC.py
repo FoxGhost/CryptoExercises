@@ -10,7 +10,7 @@ from Crypto.Util.Padding import pad
 if __name__ == '__main__':
     server = remote(HOST, PORT)
 
-    username = b'foxghost'
+    username = b'foxghost'#pay attention to the length of the name, the string admin=0 must be all in the same block
 
     server.send(username)
 
