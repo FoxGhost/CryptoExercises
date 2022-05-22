@@ -71,6 +71,7 @@ def guess_byte(p,c,ciphertext,block_size):
         server.send(iv)
         server.send(ca)
         response = server.recv(1024)
+        server.close()
 
         # print(response)
 
