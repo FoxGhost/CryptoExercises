@@ -5,4 +5,4 @@ p2 = getPrime(60)
 
 print(p1)
 print(p2)
-print(p1*p2)
+print(p1*p2) #check with factor
