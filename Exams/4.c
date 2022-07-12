@@ -27,6 +27,7 @@ int main(int argc, char const *argv[]){
 	RSA_public_encrypt(strlen(aes_key)+1, aes_key, encrypted_aes_key, bob_pubkey, RSA_PKCS1_OAEP_PADDING);
 
 	send_bob(encrypted_aes_key);
+	send_bob(iv);
 
 	EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
     EVP_CipherInit(ctx,EVP_aes_256_cbc(), aes_key, iv, 1);
