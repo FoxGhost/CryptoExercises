@@ -26,12 +26,12 @@ for c_prime_15 in range(256):
 
     if response == b'OKPAD':
 		print("c_prime_15="+str(c_prime_15))
-		p_prime_15 = c_prime_15 ^ 1
+		p_prime_15 = c_prime_15 ^ 9
         p_15 = p_prime_15 ^ c_15
         print("p_prime_15=" + str(p_prime_15))
         print("p_15=" + str(p_15))
 
-c_second_15 = p_prime_15 ^ 2
+c_second_15 = p_prime_15 ^ 8
 block_to_modify[byte_index] = c_second_15
 
 byte_index -=1
@@ -49,12 +49,12 @@ for c_prime_14 in range(256):
 
     if response == b'OKPAD':
     	print("c_prime_14="+str(c_prime_14))
-    	p_prime_14 = c_prime_14 ^ 2
+    	p_prime_14 = c_prime_14 ^ 8
     	p_14 = p_prime_14 ^ c_14
     	print("p_prime_14=" + str(p_prime_14))
     	print("p_14=" + str(p_14))
 
-c_second_14 = p_prime_14 ^ 2
+c_second_14 = p_prime_14 ^ 7
 block_to_modify[byte_index] = c_second_14
 
 byte_index -=1
@@ -72,7 +72,7 @@ for c_prime_13 in range(256):
 
     if response == b'OKPAD':
     	print("c_prime_14="+str(c_prime_14))
-    	p_prime_13 = c_prime_13 ^ 2
+    	p_prime_13 = c_prime_13 ^ 7
     	p_13 = p_prime_13 ^ c_13
     	print("p_prime_13=" + str(p_prime_13))            
     	print("p_14=" + str(p_13))
