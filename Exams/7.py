@@ -53,7 +53,7 @@ def guess_byte(p,c,ciphertext,block_size):
 
         # print(response)
 
-        if response == b'OK':
+        if response == correct_server_answer:
             print("found",end=' ')
             print(i)
 
